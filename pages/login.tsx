@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import * as yup from 'yup';
-import Cookies from 'js-cookie';
+import AuthContext from '../contexts/auth';
 
 import {
     Heading,
@@ -18,7 +18,7 @@ import {
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 import yupValidator from '../utils/yupValidator';
-import api from '../utils/api';
+import axios from '../utils/axios';
 
 import Divider from '../components/Divider';
 import Input from '../components/Input';
@@ -26,6 +26,8 @@ import Input from '../components/Input';
 const pages: React.FC = () => {
     const router = useRouter();
     const toast = useToast();
+    const { setAuthToken } = useContext(AuthContext);
+    const { token, is_loading } = useContext(AuthContext);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -53,11 +55,9 @@ const pages: React.FC = () => {
         setLoading(true);
 
         try {
-            const response = await api.post('/authenticate', data);
+            const response = await axios.post('/authenticate', data);
 
-            Cookies.set('token', response.data.token);
-
-            // Cookies.remove('token'); // logout()
+            await setAuthToken(response.data.token);
 
             setLoading(false);
 
@@ -67,7 +67,7 @@ const pages: React.FC = () => {
                 position: 'top-right',
                 isClosable: true
             });
-            router.push('/chats');
+            router.push('/private');
         } catch (error) {
             setLoading(false);
             setError(error);
@@ -79,6 +79,12 @@ const pages: React.FC = () => {
             });
         }
     };
+
+    useEffect(() => {
+        if (!is_loading && token) {
+            router.replace('/private');
+        }
+    }, [token, is_loading]);
 
     return (
         <Grid

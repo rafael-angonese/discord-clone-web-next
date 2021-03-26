@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
     Heading,
     Grid,
@@ -17,13 +17,15 @@ import * as yup from 'yup';
 import { useRouter } from 'next/router';
 
 import yupValidator from '../utils/yupValidator';
-import api from '../utils/api';
+import axios from '../utils/axios';
 
 import Input from '../components/Input';
+import AuthContext from '../contexts/auth';
 
 const pages: React.FC = () => {
     const router = useRouter();
     const toast = useToast();
+    const { token, is_loading } = useContext(AuthContext);
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -63,7 +65,7 @@ const pages: React.FC = () => {
         setLoading(true);
 
         try {
-            await api.post('/register', data);
+            await axios.post('/register', data);
 
             setLoading(false);
 
@@ -79,6 +81,12 @@ const pages: React.FC = () => {
             setError(error);
         }
     };
+
+    useEffect(() => {
+        if (!is_loading && token) {
+            router.replace('/private');
+        }
+    }, [token, is_loading]);
 
     return (
         <Grid
