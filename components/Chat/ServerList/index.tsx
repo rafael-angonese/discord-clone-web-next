@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Flex } from '@chakra-ui/react';
 
-import ServerButton from '../ServerButton';
+import ServerButton from './ServerButton';
 
 const ServerList: React.FC = () => {
     return (

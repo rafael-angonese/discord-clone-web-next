@@ -33,7 +33,7 @@ const ChannelMessage: React.FC<Props> = ({
         >
             <Avatar
                 name="Kola Tioluwani"
-                src="https://bit.ly/tioluwani-kolawole"
+                src="https://avatars.githubusercontent.com/u/48969567?v=4"
                 width="40px"
                 height="40px"
             />

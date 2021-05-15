@@ -1,9 +1,10 @@
 import React from 'react';
+import withAuth from '../utils/withAuth';
 
 import LayoutChat from '../components/Chat/Layout';
 
-function pages() {
+function chats() {
     return <LayoutChat />;
 }
 
-export default pages;
+export default withAuth(chats);

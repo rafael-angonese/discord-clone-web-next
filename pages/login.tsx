@@ -67,7 +67,7 @@ const pages: React.FC = () => {
                 position: 'top-right',
                 isClosable: true
             });
-            router.push('/private');
+            router.push('/chats');
         } catch (error) {
             setLoading(false);
             setError(error);

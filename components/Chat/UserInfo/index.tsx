@@ -17,7 +17,7 @@ const UserInfo: React.FC = () => {
             <Container display="flex" alignItems="center">
                 <Avatar
                     name="Kola Tioluwani"
-                    src="https://bit.ly/tioluwani-kolawole"
+                    src="https://avatars.githubusercontent.com/u/48969567?v=4"
                     width="32px"
                     height="32px"
                 />

@@ -20,7 +20,7 @@ const UserRow: React.FC<UserProps> = ({ nickname, isBot }) => {
         >
             <Avatar
                 name="Kola Tioluwani"
-                src="https://bit.ly/tioluwani-kolawole"
+                src="https://avatars.githubusercontent.com/u/48969567?v=4"
                 width="32px"
                 height="32px"
             />
