@@ -84,7 +84,7 @@ const pages: React.FC = () => {
 
     useEffect(() => {
         if (!is_loading && token) {
-            router.replace('/private');
+            router.replace('/chats');
         }
     }, [token, is_loading]);
 
