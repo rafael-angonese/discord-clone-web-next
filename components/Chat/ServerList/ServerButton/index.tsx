@@ -4,18 +4,21 @@ import { Button } from '@chakra-ui/react';
 import { Tooltip } from '@chakra-ui/react';
 import { Avatar } from '@chakra-ui/react';
 
+import { useServer } from '../../../../contexts/ServerContext';
+
 type Server = {
     id: number;
     name: string;
 };
 
 interface Props {
-    server: Server;
+    item: Server;
 }
 
-const ServerButton: React.FC<Props> = ({ server }) => {
+const ServerButton: React.FC<Props> = ({ item }) => {
+    const { server, setServerState } = useServer();
     return (
-        <Tooltip label={server.name} fontSize="md" placement="right">
+        <Tooltip label={item.name} fontSize="md" placement="right">
             <Button
                 display="flex"
                 alignItems="center"
@@ -24,17 +27,18 @@ const ServerButton: React.FC<Props> = ({ server }) => {
                 width="48px"
                 height="48px"
                 marginBottom="8px"
-                backgroundColor="purple.500"
+                backgroundColor={server?.id === item.id ? "purple.600" : ""}
                 cursor="pointer"
                 position="relative"
                 borderRadius="50%"
                 _hover={{ backgroundColor: 'purple.600' }}
+                onClick={() => setServerState(item)}
             >
                 <Avatar
                     padding="3px"
                     name="Kola Tioluwani"
                     background="none"
-                    src={`https://i.pravatar.cc/150?img=${server.id}`}
+                    src={`https://i.pravatar.cc/150?img=${item.id}`}
                 />
             </Button>
         </Tooltip>

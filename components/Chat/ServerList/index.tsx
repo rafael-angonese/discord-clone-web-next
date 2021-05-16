@@ -59,7 +59,7 @@ const ServerList: React.FC = () => {
                     />
                     {servers &&
                         servers.map(item => {
-                            return <ServerButton key={item.id} server={item} />;
+                            return <ServerButton key={item.id} item={item} />;
                         })}
                 </>
             )}

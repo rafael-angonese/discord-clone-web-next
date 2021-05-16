@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import handlingErros from './handlingErros';
 
 const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL,
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333',
     headers: {
         Accept: 'application/json',
         'Accept-Language': 'pt-BR',
