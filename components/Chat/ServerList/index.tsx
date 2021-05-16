@@ -5,6 +5,7 @@ import { Flex } from '@chakra-ui/react';
 import { Skeleton, SkeletonCircle } from '@chakra-ui/react';
 
 import ServerButton from './ServerButton';
+import NewServerModal from './NewServerModal';
 
 import axios from '../../../utils/axios';
 
@@ -17,19 +18,19 @@ const ServerList: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [servers, setServers] = useState<Server[] | []>([]);
 
+    const getServers = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get('/servers');
+
+            setLoading(false);
+            setServers(response.data);
+        } catch (error) {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const getServers = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get('/servers');
-
-                setLoading(false);
-                setServers(response.data);
-            } catch (error) {
-                setLoading(false);
-            }
-        };
-
         getServers();
     }, []);
 
@@ -49,11 +50,19 @@ const ServerList: React.FC = () => {
                 }
             }}
         >
-            {!loading &&
-                servers &&
-                servers.map(item => {
-                    return <ServerButton key={item.id} server={item} />;
-                })}
+            {!loading && (
+                <>
+                    <NewServerModal
+                        onClose={() => {
+                            getServers();
+                        }}
+                    />
+                    {servers &&
+                        servers.map(item => {
+                            return <ServerButton key={item.id} server={item} />;
+                        })}
+                </>
+            )}
 
             {loading && (
                 <Skeleton isLoaded={true}>
