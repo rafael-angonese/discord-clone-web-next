@@ -1,13 +1,48 @@
 import React from 'react';
+import { useEffect, useState } from 'react';
 
-import { Flex, Text, Container, Avatar } from '@chakra-ui/react';
+import {
+    Flex,
+    Text,
+    Container,
+    Avatar,
+    Skeleton,
+    SkeletonCircle
+} from '@chakra-ui/react';
+
+import axios from '../../../utils/axios';
 
 interface UserProps {
+    id: number;
     nickname: string;
     isBot?: boolean;
 }
 
-const UserRow: React.FC<UserProps> = ({ nickname, isBot }) => {
+interface User {
+    id: number;
+    name: string;
+    isBot?: boolean;
+}
+
+const SkelonUserRow: React.FC = () => {
+    return (
+        <Container
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+        >
+            <Container>
+                <SkeletonCircle size="14" />
+            </Container>
+
+            <Container>
+                <Skeleton height="20px" my="10px" />
+            </Container>
+        </Container>
+    );
+};
+
+const UserRow: React.FC<UserProps> = ({ nickname, isBot, id }) => {
     return (
         <Container
             marginTop="5px"
@@ -20,7 +55,7 @@ const UserRow: React.FC<UserProps> = ({ nickname, isBot }) => {
         >
             <Avatar
                 name="Kola Tioluwani"
-                src="https://avatars.githubusercontent.com/u/48969567?v=4"
+                src={`https://i.pravatar.cc/150?img=${id}`}
                 width="32px"
                 height="32px"
             />
@@ -56,6 +91,25 @@ const UserRow: React.FC<UserProps> = ({ nickname, isBot }) => {
 };
 
 const UserList: React.FC = () => {
+    const [loading, setLoading] = useState(true);
+    const [users, setUsers] = useState<User[] | []>([]);
+
+    const getUsers = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get('/users');
+
+            setLoading(false);
+            setUsers(response.data);
+        } catch (error) {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getUsers();
+    }, []);
+
     return (
         <Flex
             gridArea="UL"
@@ -88,23 +142,39 @@ const UserList: React.FC = () => {
                 Deuses do Next
             </Text>
 
-            <UserRow nickname="dsfafsdf" isBot={true} />
-            <UserRow nickname="Rafael Angonese" isBot={true} />
-            <UserRow nickname="dsfafsdf" isBot={true} />
-            <UserRow nickname="dsfafsdf" isBot={true} />
-            <UserRow nickname="dsfafsdf" isBot={true} />
-            <UserRow nickname="dsfafsdf" isBot={false} />
-            <UserRow nickname="dsfafsdf" isBot={false} />
-            <UserRow nickname="dsfafsdf" isBot={true} />
-            <UserRow nickname="dsfafsdf" isBot={true} />
-            <UserRow nickname="dsfafsdf" isBot={false} />
-            <UserRow nickname="dsfafsdf" isBot={true} />
-            <UserRow nickname="dsfafsdf" isBot={true} />
-            <UserRow nickname="dsfafsdf" isBot={true} />
-            <UserRow nickname="dsfafsdf" isBot={true} />
-            <UserRow nickname="dsfafsdf" isBot={true} />
-            <UserRow nickname="dsfafsdf" isBot={true} />
-            <UserRow nickname="dsfafsdf" isBot={true} />
+            {!loading && (
+                <>
+                    {users &&
+                        users.map(item => {
+                            return (
+                                <UserRow
+                                    key={item.id}
+                                    nickname={item.name}
+                                    id={item.id}
+                                    isBot={true}
+                                />
+                            );
+                        })}
+                </>
+            )}
+
+            {loading && (
+                <div>
+                    <SkelonUserRow />
+                    <SkelonUserRow />
+                    <SkelonUserRow />
+                    <SkelonUserRow />
+                    <SkelonUserRow />
+                    <SkelonUserRow />
+                    <SkelonUserRow />
+                    <SkelonUserRow />
+                    <SkelonUserRow />
+                    <SkelonUserRow />
+                    <SkelonUserRow />
+                    <SkelonUserRow />
+                    <SkelonUserRow />
+                </div>
+            )}
         </Flex>
     );
 };
