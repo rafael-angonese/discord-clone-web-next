@@ -8,6 +8,7 @@ import ServerButton from './ServerButton';
 import NewServerModal from './NewServerModal';
 
 import axios from '../../../utils/axios';
+import { useServer } from '../../../contexts/ServerContext';
 
 type Server = {
     id: number;
@@ -15,6 +16,8 @@ type Server = {
 };
 
 const ServerList: React.FC = () => {
+    const { server } = useServer();
+
     const [loading, setLoading] = useState(true);
     const [servers, setServers] = useState<Server[] | []>([]);
 
@@ -31,8 +34,10 @@ const ServerList: React.FC = () => {
     };
 
     useEffect(() => {
-        getServers();
-    }, []);
+        if (!server) {
+            getServers();
+        }
+    }, [server]);
 
     return (
         <Flex
