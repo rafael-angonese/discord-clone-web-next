@@ -1,12 +1,16 @@
 import React from 'react';
 
-import { Flex, Text, Container  } from '@chakra-ui/react';
+import { Flex, Text, Container } from '@chakra-ui/react';
 import { Icon } from '@chakra-ui/icons';
 import { RiUserAddLine } from 'react-icons/ri';
+
+import { useServer } from '../../../contexts/ServerContext';
 
 import ChannelButton from '../ChannelButton';
 
 const UserInfo: React.FC = () => {
+    const { server } = useServer();
+
     return (
         <Flex
             gridArea="CL"
@@ -39,10 +43,10 @@ const UserInfo: React.FC = () => {
                 />
             </Container>
 
-            <ChannelButton channelName='lolzinho' />
-            <ChannelButton channelName='valorant' />
-            <ChannelButton channelName='csgo' />
-            <ChannelButton channelName='free fire' />
+            <ChannelButton channelName="lolzinho" />
+            <ChannelButton channelName="valorant" />
+            <ChannelButton channelName="csgo" />
+            <ChannelButton channelName="free fire" />
         </Flex>
     );
 };

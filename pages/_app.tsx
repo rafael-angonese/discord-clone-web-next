@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppProps } from 'next/app';
 import ThemeContainer from '../contexts/theme/ThemeContainer';
-import { AuthProvider } from '../contexts/auth';
+import { AuthProvider } from '../contexts/AuthContext';
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
     return (

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import * as yup from 'yup';
-import AuthContext from '../contexts/auth';
+import AuthContext from '../contexts/AuthContext';
 
 import {
     Heading,

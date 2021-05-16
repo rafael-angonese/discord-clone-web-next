@@ -20,7 +20,7 @@ import yupValidator from '../utils/yupValidator';
 import axios from '../utils/axios';
 
 import Input from '../components/Input';
-import AuthContext from '../contexts/auth';
+import AuthContext from '../contexts/AuthContext';
 
 const pages: React.FC = () => {
     const router = useRouter();

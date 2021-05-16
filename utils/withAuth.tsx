@@ -1,7 +1,7 @@
 // HOC Higher-Order Component
 import { useRouter } from 'next/router';
 import React, { ElementType, useContext, useEffect } from 'react';
-import AuthContext from '../contexts/auth';
+import AuthContext from '../contexts/AuthContext';
 
 const withAuth = (WrappedComponenet: ElementType) => {
     const Warapper = (props: unknown) => {

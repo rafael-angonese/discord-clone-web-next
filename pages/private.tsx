@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Heading } from '@chakra-ui/react';
 import withAuth from '../utils/withAuth';
-import AuthContext from '../contexts/auth';
+import AuthContext from '../contexts/AuthContext';
 
 const Private: React.FC = () => {
     const { logout } = useContext(AuthContext);
