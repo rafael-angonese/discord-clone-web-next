@@ -1,15 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Flex, Text, Container } from '@chakra-ui/react';
 import { Icon } from '@chakra-ui/icons';
 import { RiUserAddLine } from 'react-icons/ri';
 
 import { useServer } from '../../../contexts/ServerContext';
+import axios from '../../../utils/axios';
 
-import ChannelButton from '../ChannelButton';
+import ChannelButton from './ChannelButton';
+
+type Channel = {
+    id: number;
+    name: string;
+};
 
 const UserInfo: React.FC = () => {
     const { server } = useServer();
+
+    const [loading, setLoading] = useState(true);
+    const [channels, setChannels] = useState<Channel[] | []>([]);
+
+    const getChannels = async () => {
+
+        setLoading(true);
+        try {
+            const response = await axios.get(`/channels/${server.id}`);
+            setLoading(false);
+            setChannels(response.data);
+        } catch (error) {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getChannels();
+    }, [server]);
 
     return (
         <Flex
@@ -43,10 +68,19 @@ const UserInfo: React.FC = () => {
                 />
             </Container>
 
-            <ChannelButton channelName="lolzinho" />
-            <ChannelButton channelName="valorant" />
-            <ChannelButton channelName="csgo" />
-            <ChannelButton channelName="free fire" />
+            {!loading && (
+                <>
+                    {channels &&
+                        channels.map(item => {
+                            return (
+                                <ChannelButton
+                                    key={item.id}
+                                    item={item}
+                                />
+                            );
+                        })}
+                </>
+            )}
         </Flex>
     );
 };

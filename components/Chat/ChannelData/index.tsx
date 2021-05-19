@@ -1,18 +1,47 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
-import {
-    Flex,
-    Input,
-    InputGroup,
-    InputLeftElement,
-} from '@chakra-ui/react';
+import { Flex, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { Icon } from '@chakra-ui/icons';
 import { FiAtSign } from 'react-icons/fi';
 
-import ChannelMessage from '../ChannelMessage';
+import { useChannel } from '../../../contexts/ChannelContext';
+import axios from '../../../utils/axios';
+
+import ChannelMessage from './ChannelMessage';
+
+type User = {
+    id: number;
+    name: string;
+}
+
+type Message = {
+    id: number;
+    message: string;
+    user: User;
+    created_at: string;
+};
 
 const ChannelData: React.FC = () => {
+    const { channel } = useChannel();
     const messagesRef = useRef() as React.MutableRefObject<HTMLDivElement>;
+
+    const [loading, setLoading] = useState(true);
+    const [messages, setMessages] = useState<Message[] | []>([]);
+
+    const getChannelMessages = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`/channel_messages/${channel.id}`);
+            setLoading(false);
+            setMessages(response.data);
+        } catch (error) {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getChannelMessages();
+    }, [channel]);
 
     useEffect(() => {
         const div = messagesRef.current;
@@ -51,32 +80,24 @@ const ChannelData: React.FC = () => {
                 }}
                 ref={messagesRef}
             >
-                <ChannelMessage
-                    author="Rafael"
-                    date="214/03/2021"
-                    content="Mensagem lalaalla aqui"
-                    hasMention={true}
-                    isBot={true}
-                />
-
-                {Array.from(Array(20).keys()).map(n => (
-                    <ChannelMessage
-                        key={n}
-                        author="Rafael"
-                        date="214/03/2021"
-                        content="Mensagem lalaalla aqui"
-                        hasMention={true}
-                        isBot={true}
-                    />
-                ))}
-
-                <ChannelMessage
-                    author="Rafael"
-                    date="24/03/2021"
-                    content="Aqui vai ser uma texto maior para ver como que fica"
-                    hasMention={true}
-                    isBot={true}
-                />
+                {!loading && (
+                    <>
+                        {messages &&
+                            messages.map(item => {
+                                return (
+                                    <ChannelMessage
+                                        key={item.id}
+                                        authorId={item.user.id}
+                                        author={item.user.name}
+                                        date={item.created_at}
+                                        content={item.message}
+                                        hasMention={true}
+                                        isBot={true}
+                                    />
+                                );
+                            })}
+                    </>
+                )}
             </Flex>
 
             <div style={{ width: '100%', padding: '0 16px' }}>

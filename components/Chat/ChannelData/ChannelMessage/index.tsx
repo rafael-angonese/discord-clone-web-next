@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { Button, Container, Text, Avatar } from '@chakra-ui/react';
-import { Icon } from '@chakra-ui/icons';
-import { RiUserAddLine, RiSettings3Fill } from 'react-icons/ri';
-import { FaHashtag } from 'react-icons/fa';
+import { Text, Avatar } from '@chakra-ui/react';
+
+import { format } from 'date-fns'
 
 export interface Props {
+    authorId: number;
     author: string;
     date: string;
     content: string | React.ReactElement | React.ReactNode;
@@ -14,6 +14,7 @@ export interface Props {
 }
 
 const ChannelMessage: React.FC<Props> = ({
+    authorId,
     author,
     date,
     content,
@@ -33,7 +34,7 @@ const ChannelMessage: React.FC<Props> = ({
         >
             <Avatar
                 name="Kola Tioluwani"
-                src="https://avatars.githubusercontent.com/u/48969567?v=4"
+                src={`https://i.pravatar.cc/150?img=${authorId}`}
                 width="40px"
                 height="40px"
             />
@@ -64,7 +65,7 @@ const ChannelMessage: React.FC<Props> = ({
                         </Text>
                     )}
                     <Text marginLeft="6px" fontSize="13px">
-                        {date}
+                        {format(new Date(date), 'dd/MM/yyyy HH:mm:ss')}
                     </Text>
                 </div>
                 <Text textAlign="left" fontSize="16px">

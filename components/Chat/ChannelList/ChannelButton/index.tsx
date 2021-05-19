@@ -1,15 +1,24 @@
 import React from 'react';
 
-import { Button, Container, Text } from '@chakra-ui/react';
+import { Container, Text } from '@chakra-ui/react';
 import { Icon } from '@chakra-ui/icons';
 import { RiUserAddLine, RiSettings3Fill } from 'react-icons/ri';
 import { FaHashtag } from 'react-icons/fa';
 
+import { useChannel } from '../../../../contexts/ChannelContext';
+
+type Channel = {
+    id: number;
+    name: string;
+};
+
 interface Props {
-    channelName?: string;
+    item: Channel;
 }
 
-const ChannelButton: React.FC<Props> = ({ channelName }) => {
+const ChannelButton: React.FC<Props> = ({ item }) => {
+    const { channel, setChannelState } = useChannel();
+
     return (
         <Container
             display="flex"
@@ -19,21 +28,24 @@ const ChannelButton: React.FC<Props> = ({ channelName }) => {
             marginBottom="5px 3px"
             borderRadius="5px"
         >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div
+                style={{ display: 'flex', alignItems: 'center' }}
+                onClick={() => setChannelState(item)}
+            >
                 <Icon
                     as={FaHashtag}
                     width="20px"
                     height="20px"
-                    color="white.500"
+                    color={channel?.id === item.id ? "purple.600" : "white.500" }
                 />
 
                 <Text
                     fontSize="15px"
-                    color="white.500"
+                    color={channel?.id === item.id ? "purple.600" : "white.500" }
                     marginLeft="5px"
                     _hover={{ color: 'purple.600' }}
                 >
-                    {channelName}
+                    {item.name}
                 </Text>
             </div>
 
