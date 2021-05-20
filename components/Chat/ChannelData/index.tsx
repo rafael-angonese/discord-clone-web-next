@@ -6,6 +6,7 @@ import { FiAtSign } from 'react-icons/fi';
 
 import { useChannel } from '../../../contexts/ChannelContext';
 import axios from '../../../utils/axios';
+import socket from '../../../utils/socket';
 
 import ChannelMessage from './ChannelMessage';
 
@@ -25,8 +26,15 @@ const ChannelData: React.FC = () => {
     const { channel } = useChannel();
     const messagesRef = useRef() as React.MutableRefObject<HTMLDivElement>;
 
+    const [isConnected, setIsConnected] = useState(socket.connected);
     const [loading, setLoading] = useState(true);
     const [messages, setMessages] = useState<Message[] | []>([]);
+
+    const sendMessage = async (event) => {
+        if(event.key === 'Enter'){
+            socket.emit('sendMessage', { message: 'asdfafaf' })
+        }
+    }
 
     const getChannelMessages = async () => {
         setLoading(true);
@@ -50,6 +58,24 @@ const ChannelData: React.FC = () => {
             div.scrollTop = div.scrollHeight;
         }
     }, [messagesRef]);
+
+    useEffect(() => {
+        socket.on('connect', () => {
+          setIsConnected(true);
+        });
+        socket.on('disconnect', () => {
+          setIsConnected(false);
+        });
+        socket.on('newMessage', data => {
+            console.log(data)
+            getChannelMessages()
+        });
+        return () => {
+          socket.off('connect');
+          socket.off('disconnect');
+          socket.off('newMessage');
+        };
+      }, [getChannelMessages]);
 
     return (
         <Flex
@@ -120,7 +146,7 @@ const ChannelData: React.FC = () => {
                             />
                         }
                     />
-                    <Input type="tel" placeholder="Pode falar oq quiser" />
+                    <Input onKeyPress={sendMessage} placeholder="Pode falar oq quiser" />
                 </InputGroup>
             </div>
         </Flex>
