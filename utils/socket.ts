@@ -1,8 +1,14 @@
 import io from 'socket.io-client';
+import Cookies from 'js-cookie';
 
 const URL = 'http://127.0.0.1:3333';
-// const socket = io(URL, { autoConnect: false });
-const socket = io(URL);
+
+const socket = io(URL, {
+    auth: {
+        token: Cookies.get('token')
+    }
+    // autoConnect: false
+});
 
 // socket.onAny((event, ...args) => {
 //     console.log(event, args);
@@ -15,6 +21,5 @@ const socket = io(URL);
 // socket.on("disconnect", () => {
 //     console.log(`disconnect`);
 // });
-
 
 export default socket;

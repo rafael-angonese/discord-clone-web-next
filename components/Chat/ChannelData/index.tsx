@@ -1,10 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useContext } from 'react';
 
 import { Flex, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
 import { Icon } from '@chakra-ui/icons';
 import { FiAtSign } from 'react-icons/fi';
 
 import { useChannel } from '../../../contexts/ChannelContext';
+import AuthContext from '../../../contexts/AuthContext';
 import axios from '../../../utils/axios';
 import socket from '../../../utils/socket';
 
@@ -13,7 +14,7 @@ import ChannelMessage from './ChannelMessage';
 type User = {
     id: number;
     name: string;
-}
+};
 
 type Message = {
     id: number;
@@ -24,26 +25,35 @@ type Message = {
 
 const ChannelData: React.FC = () => {
     const { channel } = useChannel();
+    const { user } = useContext(AuthContext);
     const messagesRef = useRef() as React.MutableRefObject<HTMLDivElement>;
 
+    const [message, setMessage] = useState('');
     const [isConnected, setIsConnected] = useState(socket.connected);
     const [loading, setLoading] = useState(true);
     const [messages, setMessages] = useState<Message[] | []>([]);
 
-    const sendMessage = async (event) => {
-        if(event.key === 'Enter'){
-            socket.emit('sendMessage', { message: 'asdfafaf' })
+    const sendMessage = async event => {
+        if (event.key === 'Enter') {
+            if (message) {
+                socket.emit('sendMessage', {
+                    message: message,
+                    channel_id: channel.id,
+                    user_id: user.id
+                });
+
+                setMessage('');
+            }
         }
-    }
+    };
 
     const getChannelMessages = async () => {
-        setLoading(true);
         try {
             const response = await axios.get(`/channel_messages/${channel.id}`);
-            setLoading(false);
             setMessages(response.data);
+            setLoading(false)
         } catch (error) {
-            setLoading(false);
+            setLoading(false)
         }
     };
 
@@ -57,25 +67,24 @@ const ChannelData: React.FC = () => {
         if (div) {
             div.scrollTop = div.scrollHeight;
         }
-    }, [messagesRef]);
+    }, [messagesRef, messages]);
 
     useEffect(() => {
         socket.on('connect', () => {
-          setIsConnected(true);
+            setIsConnected(true);
         });
         socket.on('disconnect', () => {
-          setIsConnected(false);
+            setIsConnected(false);
         });
         socket.on('newMessage', data => {
-            console.log(data)
-            getChannelMessages()
+            getChannelMessages();
         });
         return () => {
-          socket.off('connect');
-          socket.off('disconnect');
-          socket.off('newMessage');
+            socket.off('connect');
+            socket.off('disconnect');
+            socket.off('newMessage');
         };
-      }, [getChannelMessages]);
+    }, [getChannelMessages]);
 
     return (
         <Flex
@@ -146,7 +155,12 @@ const ChannelData: React.FC = () => {
                             />
                         }
                     />
-                    <Input onKeyPress={sendMessage} placeholder="Pode falar oq quiser" />
+                    <Input
+                        onKeyPress={sendMessage}
+                        placeholder="Digite sua mensagem"
+                        value={message}
+                        onChange={event => setMessage(event.target.value)}
+                    />
                 </InputGroup>
             </div>
         </Flex>
