@@ -2,9 +2,14 @@ import React, { createContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from '../utils/axios';
 
+interface User {
+    id: number;
+    name: string;
+}
+
 interface AuthContextData {
     token: string;
-    user: object | null;
+    user: User | null;
     is_loading: boolean;
     setAuthToken(token: string): Promise<void>;
     logout(): Promise<void>;
@@ -14,6 +19,7 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider: React.FC = ({ children }) => {
     const [token, setToken] = useState<string>('');
+    const [user, setUser] = useState<User | null>(null);
     const [is_loading, setIs_loading] = useState(true);
 
     useEffect(() => {
@@ -23,8 +29,15 @@ export const AuthProvider: React.FC = ({ children }) => {
             if (storagedToken) {
                 axios.defaults.headers.Authorization = `Bearer ${storagedToken}`;
                 setToken(storagedToken);
+               try {
+
+                   const response = await axios.get('/me');
+                   setUser(response.data)
+               } catch (error) {
+                setUser(null)
+               }
             }
-            setIs_loading(false);
+            setIs_loading(false)
         }
 
         loadStoragedData();
@@ -42,7 +55,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     return (
         <AuthContext.Provider
-            value={{ token, user: {}, is_loading, setAuthToken, logout }}
+            value={{ token, user: user, is_loading, setAuthToken, logout }}
         >
             {children}
         </AuthContext.Provider>
