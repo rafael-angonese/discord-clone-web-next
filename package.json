@@ -1,7 +1,9 @@
 {
-  "name": "rafael-angonese-nextjs",
+  "name": "discord-clone-web-next",
   "version": "0.1.0",
-  "private": true,
+  "repository": "https://github.com/rafael-angonese/discord-clone-web-next.git",
+  "author": "Rafael Angonese <rafael.angonese09@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
